@@ -1,0 +1,298 @@
+openapi: 3.0.3
+info:
+  title: API сервиса фильмов
+  version: 1.0.0
+
+  description: |
+    # Общая информация
+    Описание API произведено в формате **OpenAPI 3.0**.
+
+    Вы можете использовать данный файл для ознакомления с методами API с помощью:
+      * IDE [**Visual Studio Code**](https://code.visualstudio.com/) версии 1.64.0 и выше,
+      * Расширение [**Swagger Viewer**](https://marketplace.visualstudio.com/items?itemName=Arjun.swagger-viewer) версии 3.0.0 и выше.
+
+    Если в запросе/ответе присутствуют дополнительные элементы данных, которые не предусмотрены данным описанием,
+    запрос/ответ должен рассматриваться, как корректный. Дополнительные элементы должны быть проигнорированы.
+
+    ## История изменений
+    Дата | Версия документа | Описание изменений
+    -----------|-------|------
+    26.09.2022 | 1.0.0 | Первая версия документа.
+
+    ## Ошибки
+    HTTP-код | Описание
+    ----------|-------------
+    400 | Неправильный запрос. Статус выдается из-за нарушения формата или допустимых значений параметров запроса.
+    401 | Не авторизованный запрос.
+    403 | Вызов запрещен.
+    404 | Ресурс не найден.
+    422 | Невозможно выполнить операцию на бизнес уровне.
+    500 | Внутренняя ошибка. Необходимо повторить запрос позднее.
+    503 | Сервис временно недоступен. Необходимо повторить запрос позднее.
+
+tags:
+  - name: Movies
+    description: Методы API для взаимодействия со списком фильмов.
+
+servers:
+  - url: '/api/v1/'
+
+paths:
+  /user/register:
+    post:
+      tags:
+        - Users
+      summary: Регистрация нового пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+      responses:
+        '200':
+          description: Запрос успешно обработан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+        '503':
+          $ref: '#/components/responses/503'
+  /user/login:
+    get:
+      tags:
+        - Users
+      summary: Проверка текущего состояния пользователя
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Запрос успешно обработан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+        '503':
+          $ref: '#/components/responses/503'
+    post:
+      tags:
+        - Users
+      summary: Вход в закрытую часть приложения
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+      responses:
+        '200':
+          description: Запрос успешно обработан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+        '503':
+          $ref: '#/components/responses/503'
+
+  /user/logout:
+    post:
+      tags:
+        - Users
+      summary: Выход из авторизованной зоны
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Запрос успешно обработан
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+        '503':
+          $ref: '#/components/responses/503'
+
+  /user/{userId}/avatar:
+    post:
+      tags:
+        - Users
+      summary: Установка аватара пользователя
+      parameters:
+        - name: userId
+          in: path
+          description: Идентификатор пользователя
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Запрос успешно обработан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserChangeAvatarResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+        '503':
+          $ref: '#/components/responses/503'
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserLoginRequest:
+      required:
+        - login
+        - password
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+    UserLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        email:
+          type: string
+    UserChangeAvatarResponse:
+      type: object
+      properties:
+        avatar:
+          type: string
+          example: http://127.0.0.1:9000/upload/EfSakYYae4lXTqfOY-9uZ.png
+    UserRegisterRequest:
+      required:
+        - name
+        - email
+        - password
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 6
+          maxLength: 12
+    User:
+      type: object
+      properties:
+        id:
+          description: Идентификатор пользователя
+          type: string
+          example: 634dcdd51d809e708e660053
+        name:
+          description: Имя пользователя
+          type: string
+        email:
+          type: string
+          description: Электронная почта пользователя.
+          example: 'test@test.ru'
+        avatar:
+          description: Изображение пользователя в формате .jpg или .png.
+          type: string
+          example: 'http://127.0.0.1:9000/static/default_avatar.png'
+    ErrorResponseModel:
+      description: Модель ответа на основе RFC 7807
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: |
+            HTTP-код сгенерированный исходным сервером для конкретно этого типа проблемы.
+          minimum: 100
+          maximum: 600
+          example: 503
+        message:
+          type: string
+          description: |
+            Человекочитаемое объяснение, характерное для конкретно этого случая.
+          example: Таймут подключения к базе данных
+        details:
+          type: string
+          description: |
+            Короткое описание проблемы на английском языке для чтения инженерами (обычно не локализированное).
+          example: Service Unavailable
+  responses:
+    400:
+      description: Некорректные входные данные
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseModel'
+    401:
+      description: Неавторизован
+    403:
+      description: Запрещено
+    404:
+      description: Не найден
+    500:
+      description: Внутренняя ошибка сервера
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseModel'
+    503:
+      description: Сервис временно недоступен

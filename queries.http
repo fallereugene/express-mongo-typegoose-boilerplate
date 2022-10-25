@@ -1,0 +1,68 @@
+### Variables
+@port = 9000
+@apiPrefix = api
+@apiVersion = v1
+@existingUserId = 6357de9587622c66bb09133a
+@expiredToken = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNhcEBnbWFpbC5jb20iLCJpZCI6IjYzNDgwYzI0OWIyZDkwYTdiNjEzYzZmMiIsImlhdCI6MTY2NTY3NTcwMSwiZXhwIjoxNjY1Njc1NzMxfQ.1oC0EobNj7bZGzvokMLhIzPHzKU-rqaYFMtqV__xFsA
+@validToken = eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNhcEBnbWFpbC5jb20iLCJpZCI6IjYzNTdkZmE3ODc2MjJjNjZiYjA5MTM0YSIsImlhdCI6MTY2NjcwMzI3MywiZXhwIjoxNjY2ODc2MDczfQ.QKuQSQ2Zj60MrDX88QW2ImQoxmG9T5BM8dK-2ZPNbX4
+
+#####################################################################
+
+### Users (/user/)
+
+### 
+## Регистрация нового пользователя
+
+POST  http://localhost:{{port}}/{{apiPrefix}}/{{apiVersion}}/users/register HTTP/1.1
+content-type: application/json
+
+{
+    "name": "BobS",
+    "email": "sap@gmail.com",
+    "password": "123456"
+}
+
+###
+## Логин пользователя в систему
+
+POST  http://localhost:{{port}}/{{apiPrefix}}/{{apiVersion}}/users/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "sap@gmail.com",
+    "password": "123456"
+}
+
+### 
+## Установка аватара
+
+POST http://localhost:{{port}}/{{apiPrefix}}/{{apiVersion}}/users/{{existingUserId}}/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="test.jpg"
+Content-Type: image/png
+
+< /Users/Eugene/tmp/test.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+## Выход из авторизованной зоны
+
+POST  http://localhost:{{port}}/{{apiPrefix}}/{{apiVersion}}/users/logout HTTP/1.1
+content-type: application/json
+
+###
+## Проверка состояния пользователя
+
+GET  http://localhost:{{port}}/{{apiPrefix}}/{{apiVersion}}/users/login HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{validToken}}
+
+#####################################################################
+
+
+
+
+
+

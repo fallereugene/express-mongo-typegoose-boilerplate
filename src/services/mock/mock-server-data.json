@@ -1,0 +1,6 @@
+{
+  "api": {
+    "users": ["Peter Erdington", "Elvis McBright", "John Snow", "Peter Jackson"],
+    "emails": ["erdington@gmail.com", "mcbright@gmail.com", "snow@yahoo.com", "jackson@gmail.com"]
+  }
+}
